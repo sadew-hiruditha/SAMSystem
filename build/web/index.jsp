@@ -36,7 +36,7 @@
                 <!-- Left Section -->
                 <div class="col-lg-6 p-0 d-none d-lg-block">
                     <div class="left-section">
-                        <h2>Welcome Back To</h2>
+                        <h2>Welcome Batman</h2>
                         <h3>Student Attendance Management System</h3>
                         <!-- <p>This is where you can add some introductory text or information about your system.</p> -->
                     </div>
