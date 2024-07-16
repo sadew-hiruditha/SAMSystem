@@ -1,65 +1,76 @@
-<%@page import="java.sql.ResultSet"%>
-<%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="java.sql.ResultSet"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="app.java.MD5"%>
+<%@page import="app.java.User"%>
 <%@page import="app.java.DBConnector"%>
-<%@page import="java.net.URLEncoder"%>
+<%@page import="java.util.UUID"%>
+
 <%
     // Retrieve form parameters
     String username = request.getParameter("username");
     String password = request.getParameter("password");
     String rememberMe = request.getParameter("rememberMe");
 
-    // Encrypt the password using MD5 (Note: Consider using a more secure hashing algorithm in production)
-    String encryptedPassword = MD5.getMD5(password);
+    Connection con = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
 
     try {
-        Connection con = DBConnector.getConnection();
-        String query = "SELECT firstname, lastname, role FROM users WHERE username=? AND password=?";
-        PreparedStatement pst = con.prepareStatement(query);
-        pst.setString(1, username);
-        pst.setString(2, encryptedPassword);
-        ResultSet rs = pst.executeQuery();
+        con = DBConnector.getConnection();
+        if (con == null) {
+            throw new Exception("Unable to establish database connection");
+        }
 
-        if (rs.next()) {
-            // User found, create a session
-            String role = rs.getString("role");
-            String firstname = rs.getString("firstname");
-            String lastname = rs.getString("lastname");
-            
-            session.setAttribute("username", username);
-            session.setAttribute("role", role);
-            session.setAttribute("firstname", firstname);
-            session.setAttribute("lastname", lastname);
+        User user = new User(username, password);
 
-            // Handle "Remember Me" functionality
-            if ("on".equals(rememberMe)) {
-                Cookie usernameCookie = new Cookie("username", URLEncoder.encode(username, "UTF-8"));
-                Cookie roleCookie = new Cookie("role", URLEncoder.encode(role, "UTF-8"));
-                Cookie firstnameCookie = new Cookie("firstname", URLEncoder.encode(firstname, "UTF-8"));
-                Cookie lastnameCookie = new Cookie("lastname", URLEncoder.encode(lastname, "UTF-8"));
-                
-                int maxAge = 30 * 24 * 60 * 60; // 30 days
-                usernameCookie.setMaxAge(maxAge);
-                roleCookie.setMaxAge(maxAge);
-                firstnameCookie.setMaxAge(maxAge);
-                lastnameCookie.setMaxAge(maxAge);
-                
-                response.addCookie(usernameCookie);
-                response.addCookie(roleCookie);
-                response.addCookie(firstnameCookie);
-                response.addCookie(lastnameCookie);
-            }
+        if (user.authenticate(con)) {
+            if (user.retrieveUserDetails(con)) {
+                // User authenticated successfully and details retrieved
+                session.setAttribute("userId", user.getId());
+                session.setAttribute("username", user.getUsername());
+                session.setAttribute("role", user.getRole());
+                session.setAttribute("firstname", user.getFirstName());
+                session.setAttribute("lastname", user.getLastName());
 
-            // Redirect to the respective dashboard
-            if ("admin".equals(role)) {
-                response.sendRedirect("adminDashboard.jsp");
-            } else if ("teacher".equals(role)) {
-                response.sendRedirect("teacherDashboard.jsp");
+                // Handle "Remember Me" functionality
+                if ("on".equals(rememberMe)) {
+                    String cookieToken = UUID.randomUUID().toString();
+
+                    // Store the cookie token in the database
+                    String updateQuery = "UPDATE users SET cookie_token = ? WHERE id = ?";
+                    pst = con.prepareStatement(updateQuery);
+                    pst.setString(1, cookieToken);
+                    pst.setInt(2, user.getId());
+                    pst.executeUpdate();
+
+                    // Set the cookie
+                    Cookie tokenCookie = new Cookie("remember_token", cookieToken);
+                    int maxAge = 30 * 24 * 60 * 60; // 30 days
+                    tokenCookie.setMaxAge(maxAge);
+                    tokenCookie.setHttpOnly(true); // For better security
+                    tokenCookie.setPath("/"); // Available on all pages
+                    response.addCookie(tokenCookie);
+                }
+
+                // Redirect to the respective dashboard
+                String userRole = user.getRole();
+
+                if (userRole != null) {
+                    if ("admin".equalsIgnoreCase(userRole)) {
+                        response.sendRedirect("./admin/adminDashboard.jsp");
+                    } else if ("teacher".equalsIgnoreCase(userRole)) {
+                        response.sendRedirect("./teacher/teacherDashboard.jsp");
+                    } else {
+                        request.setAttribute("errorMessage", "Invalid user role: " + userRole);
+                        request.getRequestDispatcher("index.jsp").forward(request, response);
+                    }
+                } else {
+                    request.setAttribute("errorMessage", "User role is not set.");
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
+                }
             } else {
-                // Handle other roles or show an error
-                request.setAttribute("errorMessage", "Invalid user role.");
+                request.setAttribute("errorMessage", "Failed to retrieve user details.");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
         } else {
@@ -67,14 +78,24 @@
             request.setAttribute("errorMessage", "Invalid username or password. Please try again.");
             request.getRequestDispatcher("index.jsp").forward(request, response);
         }
-
-        // Close connections
-        rs.close();
-        pst.close();
-        con.close();
     } catch (Exception e) {
         e.printStackTrace();
-        request.setAttribute("errorMessage", "An error occurred. Please try again later.");
+        request.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
         request.getRequestDispatcher("index.jsp").forward(request, response);
+    } finally {
+        // Close resources
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pst != null) {
+                pst.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 %>

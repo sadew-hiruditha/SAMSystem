@@ -38,7 +38,7 @@
         <title>Teacher Dashboard - Attendance Management</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="./css/tacherdashboard/styles.css">
+        <link rel="stylesheet" href="../css/dashboard/styles.css">
     </head>
     <body>
         <div class="container-fluid">
@@ -78,7 +78,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link logout" href="logout.jsp" id="logout-link">
+                                <a class="nav-link logout" href="../logout.jsp" id="logout-link">
                                     <i class="fas fa-sign-out-alt"></i> Logout
                                 </a>
                             </li>
@@ -120,7 +120,7 @@
 
                     // Check if it's the logout link
                     if ($(this).attr('id') === 'logout-link') {
-                        window.location.href = "logout.jsp";
+                        window.location.href = "../logout.jsp";
                         return;
                     }
 
