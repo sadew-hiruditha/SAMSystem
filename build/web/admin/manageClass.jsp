@@ -4,86 +4,190 @@
     Author     : Sadew
 --%>
 
+<%@page import="java.util.List"%>
+<%@page import="app.java.DBConnector"%>
+<%@page import="app.java.Admin"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Classes</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="mb-4">Manage Classes</h2>
-        
-        <!-- Add Class Form -->
-        <div class="card mb-4">
-            <div class="card-header">
-                Add New Class
-            </div>
-            <div class="card-body">
-                <form id="addClassForm">
-                    <div class="mb-3">
-                        <label for="className" class="form-label">Class Name</label>
-                        <input type="text" class="form-control" id="className" placeholder="Enter class name">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
-        </div>
-        
-        <!-- Classes Table -->
-        <div class="card">
-            <div class="card-header">
-                Existing Classes
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Class Name</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody id="classesTableBody">
-                        <!-- Dynamic class rows go here -->
-                        <!-- Example row -->
-                        <tr>
-                            <td>1</td>
-                            <td>Class A</td>
-                            <td><button class="btn btn-warning btn-sm">Edit</button></td>
-                            <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manage Classes</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../css/dashboard/styles.css">
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <jsp:include page="../navbar.jsp" />
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
+                    <div class="content">
+                        <div class="container mt-5">
+                            <h2 class="mb-4">Manage Classes</h2>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Example script for handling form submission and table updates
-        $(document).ready(function() {
-            $('#addClassForm').on('submit', function(e) {
-                e.preventDefault();
-                var className = $('#className').val();
-                if (className) {
-                    // Here you would typically send the data to the server and update the table
-                    var newRow = `<tr>
-                        <td>1</td>
-                        <td>${className}</td>
-                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                    </tr>`;
-                    $('#classesTableBody').append(newRow);
-                    $('#className').val(''); // Clear input
-                }
-            });
-        });
-    </script>
-</body>
+                            <%
+                                String status = request.getParameter("s");
+                                if (status != null) {
+                                    if (status.equals("1")) {
+                            %>
+                            <div class="alert alert-success mt-3">Class added successfully!</div>
+                            <%
+                            } else if (status.equals("0")) {
+                            %>
+                            <div class="alert alert-danger mt-3">Failed to add the class. Please try again.</div>
+                            <%
+                            } else if (status.equals("2")) {
+                            %>
+                            <div class="alert alert-warning mt-3">This class already exists!</div>
+                            <%
+                            } else if (status.equals("3")) {
+                            %>
+                            <div class="alert alert-danger mt-3">Class Delete Successfully!</div>
+                            <%
+                            } else if (status.equals("4")) {
+                            %>
+                            <div class="alert alert-success mt-3">Class Update Successfully!</div>
+                            <%
+                                    }
+                                }
+                            %>
+
+                            <!-- Add Class Form -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    Add New Class
+                                </div>
+                                <div class="card-body">
+                                    <form action="components/addclass.jsp" method="POST">
+                                        <div class="mb-3">
+                                            <label for="className" class="form-label">Class Name</label>
+                                            <input type="text" class="form-control" id="className" placeholder="Enter class name" name="classname" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Classes Table -->
+                            <div class="card">
+                                <div class="card-header">
+                                    Existing Classes
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Class Name</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <%
+                                                Admin admin = new Admin();
+                                                List<Admin> classes = admin.getAllClasses(DBConnector.getConnection());
+                                                for (Admin cls : classes) {
+                                            %>
+                                            <tr>
+                                                <td><%= cls.getClassName()%></td>
+                                                <td>
+                                                    <button class="btn btn-warning btn-sm" onclick="editClass(<%= cls.getId()%>, '<%= cls.getClassName()%>')">Edit</button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-sm" onclick="deleteClass(<%= cls.getId()%>, '<%= cls.getClassName()%>')">Delete</button>
+                                                </td>
+                                            </tr>
+                                            <%
+                                                }
+                                            %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Edit Class Modal -->
+        <div class="modal fade" id="editClassModal" tabindex="-1" aria-labelledby="editClassModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editClassModalLabel">Edit Class</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="components/updateclass.jsp" method="POST">
+                        <div class="modal-body">
+                            <input type="hidden" id="editClassId" name="id">
+                            <div class="mb-3">
+                                <label for="editClassName" class="form-label">Class Name</label>
+                                <input type="text" class="form-control" id="editClassName" name="className" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete the class "<span id="deleteClassName"></span>"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="components/deleteclass.jsp" method="POST">
+                            <input type="hidden" id="deleteClassId" name="id">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+                                                            // Toggle sidebar on mobile
+                                                            $(".navbar-toggler").click(function () {
+                                                                $("#sidebar").toggleClass("show");
+                                                            });
+
+                                                            // Close sidebar when clicking outside on mobile
+                                                            $(document).click(function (event) {
+                                                                if (!$(event.target).closest('#sidebar, .navbar-toggler').length) {
+                                                                    $("#sidebar").removeClass("show");
+                                                                }
+                                                            });
+
+                                                            function editClass(id, className) {
+                                                                document.getElementById('editClassId').value = id;
+                                                                document.getElementById('editClassName').value = className;
+                                                                var editModal = new bootstrap.Modal(document.getElementById('editClassModal'));
+                                                                editModal.show();
+                                                            }
+
+                                                            function deleteClass(id, className) {
+                                                                document.getElementById('deleteClassId').value = id;
+                                                                document.getElementById('deleteClassName').textContent = className;
+                                                                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                                                                deleteModal.show();
+                                                            }
+        </script>
+    </body>
 </html>
