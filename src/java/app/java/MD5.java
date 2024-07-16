@@ -8,6 +8,7 @@ package app.java;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  *
@@ -36,6 +37,18 @@ public class MD5 {
             
         }
     }
+    
+        public static String generateRandomToken(int byteLength) {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[byteLength];
+        random.nextBytes(bytes);
+        StringBuilder sb = new StringBuilder(byteLength * 2);
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
     
     
 }
