@@ -1,112 +1,152 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%
     String username = (String) session.getAttribute("username");
-    String role = (String) session.getAttribute("role");
-    if (username == null || !"admin".equals(role)) {
-        response.sendRedirect("index.jsp");
-        return;
+    if (username == null) {
+        Cookie[] cookies = request.getCookies();
+        String rememberedUsername = null;
+        String rememberedRole = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("username".equals(cookie.getName())) {
+                    rememberedUsername = cookie.getValue();
+                } else if ("role".equals(cookie.getName())) {
+                    rememberedRole = cookie.getValue();
+                }
+            }
+        }
+        if (rememberedUsername != null && rememberedRole != null) {
+            session.setAttribute("username", rememberedUsername);
+            session.setAttribute("role", rememberedRole);
+        } else {
+            response.sendRedirect("index.jsp");
+            return;
+        }
     }
+
+    LocalDate today = LocalDate.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    String formattedDate = today.format(formatter);
 %>
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .sidebar {
-            height: 100vh;
-            background-color: #f8f9fa;
-            padding-top: 20px;
-        }
-        .sidebar a {
-            padding: 10px 15px;
-            text-decoration: none;
-            color: #333;
-            display: block;
-        }
-        .sidebar a:hover {
-            background-color: #e9ecef;
-        }
-        .content {
-            padding: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
-                <div class="position-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#dashboard">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#users">
-                                <i class="fas fa-users"></i> Manage Users
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#classes">
-                                <i class="fas fa-chalkboard"></i> Manage Classes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#reports">
-                                <i class="fas fa-chart-bar"></i> Reports
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="logout.jsp">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Dashboard - Attendance Management</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../css/dashboard/styles.css">
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Left Sidebar Navigation -->
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                    <div class="position-sticky">
+                        <div class="user-info">
+                            <h5>Welcome, <%= session.getAttribute("firstname")%> <%= session.getAttribute("lastname")%>!</h5>
+                            <p><%= session.getAttribute("role")%></p>
+                        </div>
+                        <ul class="nav flex-column mt-4">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="dashboard.jsp" data-page="dashboard.jsp">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="manageClass.jsp" data-page="manageClass.jsp">
+                                    <i class="fas fa-clipboard-check"></i> Manage Classes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-page="view-attendance.jsp">
+                                    <i class="fas fa-chalkboard-teacher"></i> Manage Class Arms
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-page="reports.jsp">
+                                    <i class="fas fas fa-user-tie"></i> Manage Teachers
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-page="settings.jsp">
+                                    <i class="fas fa-user-graduate"></i> Manage Students
+                                </a>
+                            </li>
 
-            <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Admin Dashboard</h1>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Total Users</h5>
-                                <p class="card-text">250</p>
-                            </div>
-                        </div>
+                            <li class="nav-item">
+                                <a class="nav-link logout" href="../logout.jsp" id="logout-link">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+
+
+                        </ul>
+
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Total Classes</h5>
-                                <p class="card-text">15</p>
-                            </div>
+                </nav>
+
+                <!-- Main Content Area -->
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
+                    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 d-md-none">
+                        <div class="container-fluid">
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <span class="navbar-brand">Admin Dashboard</span>
                         </div>
+                    </nav>
+                    <div id="content">
+                        <!-- Content will be loaded here -->
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Today's Attendance</h5>
-                                <p class="card-text">95%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Add more dashboard content here -->
-            </main>
+                </main>
+            </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Load default page
+                $("#content").load("dashboard.jsp");
+
+                // Handle navigation clicks
+                $(".nav-link").click(function (e) {
+                    e.preventDefault();
+                    var page = $(this).data("page");
+
+                    // Check if it's the logout link
+                    if ($(this).attr('id') === 'logout-link') {
+                        window.location.href = "../logout.jsp";
+                        return;
+                    }
+
+                    if (page) {
+                        $("#content").load(page);
+                        $(".nav-link").removeClass("active");
+                        $(this).addClass("active");
+                        // Close sidebar on mobile after clicking a link
+                        if ($(window).width() < 768) {
+                            $("#sidebar").removeClass("show");
+                        }
+                    }
+                });
+
+                // Toggle sidebar on mobile
+                $(".navbar-toggler").click(function () {
+                    $("#sidebar").toggleClass("show");
+                });
+
+                // Close sidebar when clicking outside on mobile
+                $(document).click(function (event) {
+                    if (!$(event.target).closest('#sidebar, .navbar-toggler').length) {
+                        $("#sidebar").removeClass("show");
+                    }
+                });
+            });
+        </script>
+    </body>
 </html>

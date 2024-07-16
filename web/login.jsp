@@ -58,7 +58,7 @@
 
                 if (userRole != null) {
                     if ("admin".equalsIgnoreCase(userRole)) {
-                        response.sendRedirect("adminDashboard.jsp");
+                        response.sendRedirect("./admin/adminDashboard.jsp");
                     } else if ("teacher".equalsIgnoreCase(userRole)) {
                         response.sendRedirect("./teacher/teacherDashboard.jsp");
                     } else {
