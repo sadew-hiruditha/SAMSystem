@@ -33,12 +33,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="manageTeachers.jsp">
+                <a class="nav-link" href="manageTeacher.jsp">
                     <i class="fas fa-user-tie"></i> Manage Teachers
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="manageStudents.jsp">
+                <a class="nav-link" href="manageStudent.jsp">
                     <i class="fas fa-user-graduate"></i> Manage Students
                 </a>
             </li>

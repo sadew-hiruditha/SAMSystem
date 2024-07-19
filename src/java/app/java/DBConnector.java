@@ -24,11 +24,11 @@ public class DBConnector {
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
         Connection con = null;
         try {
-            Class.forName(DRIVER);
+            java.lang.Class.forName(DRIVER); // Use fully qualified name
             con = DriverManager.getConnection(URL, USER, PASSWORD);
-
         } catch (Exception e) {
-            Logger.getLogger(DBConnector.class.getName());
+            e.printStackTrace(); // This will print the stack trace to the console
+            throw e; // Rethrow the exception to make it clear that an error has occurred
         }
         return con;
     }

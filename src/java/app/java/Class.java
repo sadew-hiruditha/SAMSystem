@@ -9,18 +9,22 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Admin {
+    public class Class {
+
+    static void forName(String DRIVER) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     private int id;
     private String className;
 
-    public Admin() {}
+    public Class() {}
 
-    public Admin(String className) {
+    public Class(String className) {
         this.className = className;
     }
 
-    public Admin(int id, String className) {
+    public Class(int id, String className) {
         this.id = id;
         this.className = className;
     }
@@ -67,19 +71,19 @@ public class Admin {
                 return result > 0;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, "Error adding class", ex);
+            Logger.getLogger(Class.class.getName()).log(Level.SEVERE, "Error adding class", ex);
             ex.printStackTrace();
             return false;
         }
     }
 
-    public List<Admin> getAllClasses(Connection con) throws SQLException {
-        List<Admin> classes = new ArrayList<>();
+    public List<Class> getAllClasses(Connection con) throws SQLException {
+        List<Class> classes = new ArrayList<>();
         String query = "SELECT id, className FROM tblclass ORDER BY id";
         try (PreparedStatement ps = con.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                classes.add(new Admin(rs.getInt("id"), rs.getString("className")));
+                classes.add(new Class(rs.getInt("id"), rs.getString("className")));
             }
         }
         return classes;
@@ -100,5 +104,16 @@ public class Admin {
             ps.setInt(1, this.id);
             return ps.executeUpdate() > 0;
         }
+    }
+    
+    public static int getTotalClasses(Connection con) throws SQLException {
+        String query = "SELECT COUNT(*) AS totalClasses FROM tblclass";
+        try (PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("totalClasses");
+            }
+        }
+        return 0;
     }
 }

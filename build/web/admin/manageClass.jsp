@@ -6,7 +6,7 @@
 
 <%@page import="java.util.List"%>
 <%@page import="app.java.DBConnector"%>
-<%@page import="app.java.Admin"%>
+<%@page import="app.java.Class"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,9 +23,18 @@
             <div class="row">
                 <jsp:include page="../navbar.jsp" />
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
+                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Create Class Arms</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="adminDashboard.jsp">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Manage Class</li>
+                        </ol>
+                    </nav>
+                </div>
                     <div class="content">
                         <div class="container mt-5">
-                            <h2 class="mb-4">Manage Classes</h2>
+                            <!--<h2 class="mb-4">Manage Classes</h2>-->
 
                             <%
                                 String status = request.getParameter("s");
@@ -60,7 +69,7 @@
                                     Add New Class
                                 </div>
                                 <div class="card-body">
-                                    <form action="components/addclass.jsp" method="POST">
+                                    <form action="components_Class/addclass.jsp" method="POST">
                                         <div class="mb-3">
                                             <label for="className" class="form-label">Class Name</label>
                                             <input type="text" class="form-control" id="className" placeholder="Enter class name" name="classname" required>
@@ -86,9 +95,9 @@
                                         </thead>
                                         <tbody>
                                             <%
-                                                Admin admin = new Admin();
-                                                List<Admin> classes = admin.getAllClasses(DBConnector.getConnection());
-                                                for (Admin cls : classes) {
+                                                Class classm = new Class();
+                                                List<Class> classes = classm.getAllClasses(DBConnector.getConnection());
+                                                for (Class cls : classes) {
                                             %>
                                             <tr>
                                                 <td><%= cls.getClassName()%></td>
@@ -120,7 +129,7 @@
                         <h5 class="modal-title" id="editClassModalLabel">Edit Class</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="components/updateclass.jsp" method="POST">
+                    <form action="components_Class/updateclass.jsp" method="POST">
                         <div class="modal-body">
                             <input type="hidden" id="editClassId" name="id">
                             <div class="mb-3">
@@ -150,7 +159,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form action="components/deleteclass.jsp" method="POST">
+                        <form action="components_Class/deleteclass.jsp" method="POST">
                             <input type="hidden" id="deleteClassId" name="id">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>

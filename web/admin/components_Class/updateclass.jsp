@@ -1,4 +1,4 @@
-<%@page import="app.java.Admin"%>
+<%@page import="app.java.Class"%>
 <%@page import="app.java.DBConnector"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
@@ -7,9 +7,9 @@
     String status = "0"; // Default to failure
     
     if(className != null && !className.isEmpty()) {
-        Admin admin = new Admin(id, className);
+        Class classm = new Class(id, className);
         try {
-            if(admin.updateClass(DBConnector.getConnection())) {
+            if(classm.updateClass(DBConnector.getConnection())) {
                 status = "4"; // Success
             }
         } catch(Exception e) {
