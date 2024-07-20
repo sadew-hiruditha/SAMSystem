@@ -21,17 +21,17 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                   <jsp:include page="navbar.jsp" />
+                <jsp:include page="navbar.jsp" />
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
-                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Create Class Arms</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="adminDashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Manage Class</li>
-                        </ol>
-                    </nav>
-                </div>
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Create Class Arms</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="adminDashboard.jsp">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Manage Class</li>
+                            </ol>
+                        </nav>
+                    </div>
                     <div class="content">
                         <div class="container mt-5">
                             <!--<h2 class="mb-4">Manage Classes</h2>-->
@@ -172,31 +172,31 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-                                                            // Toggle sidebar on mobile
-                                                            $(".navbar-toggler").click(function () {
-                                                                $("#sidebar").toggleClass("show");
-                                                            });
+                                                        // Toggle sidebar on mobile
+                                                        $(".navbar-toggler").click(function () {
+                                                            $("#sidebar").toggleClass("show");
+                                                        });
 
-                                                            // Close sidebar when clicking outside on mobile
-                                                            $(document).click(function (event) {
-                                                                if (!$(event.target).closest('#sidebar, .navbar-toggler').length) {
-                                                                    $("#sidebar").removeClass("show");
-                                                                }
-                                                            });
-
-                                                            function editClass(id, className) {
-                                                                document.getElementById('editClassId').value = id;
-                                                                document.getElementById('editClassName').value = className;
-                                                                var editModal = new bootstrap.Modal(document.getElementById('editClassModal'));
-                                                                editModal.show();
+                                                        // Close sidebar when clicking outside on mobile
+                                                        $(document).click(function (event) {
+                                                            if (!$(event.target).closest('#sidebar, .navbar-toggler').length) {
+                                                                $("#sidebar").removeClass("show");
                                                             }
+                                                        });
 
-                                                            function deleteClass(id, className) {
-                                                                document.getElementById('deleteClassId').value = id;
-                                                                document.getElementById('deleteClassName').textContent = className;
-                                                                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-                                                                deleteModal.show();
-                                                            }
+                                                        function editClass(id, className) {
+                                                            document.getElementById('editClassId').value = id;
+                                                            document.getElementById('editClassName').value = className;
+                                                            var editModal = new bootstrap.Modal(document.getElementById('editClassModal'));
+                                                            editModal.show();
+                                                        }
+
+                                                        function deleteClass(id, className) {
+                                                            document.getElementById('deleteClassId').value = id;
+                                                            document.getElementById('deleteClassName').textContent = className;
+                                                            var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                                                            deleteModal.show();
+                                                        }
         </script>
     </body>
 </html>
