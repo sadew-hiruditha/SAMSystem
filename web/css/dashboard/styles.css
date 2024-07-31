@@ -2,8 +2,12 @@ body {
   font-family: 'Arial', sans-serif;
 }
 .sidebar {
+   background-image: url(../../image/registration.jpg);
+    background-size: cover;
+    background-position: bottom;
+    background-repeat: no-repeat;
   min-height: 100vh;
-  background-color: #007bff;
+  background-color: red;
   color: #ecf0f1;
   transition: all 0.3s;
 }
@@ -17,6 +21,8 @@ body {
 .sidebar .nav-link:hover, .sidebar .nav-link.active {
   background-color: #1064b9;
 }
+
+
 
 .sidebar .nav-link.logout {
   background-color: #ef4431;

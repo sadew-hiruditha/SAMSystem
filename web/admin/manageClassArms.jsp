@@ -59,7 +59,7 @@
                             <!-- Add Class Arm Form -->
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    Add New Class Arm
+                                        <i class="fas fa-plus-circle me-2"></i>Add New Class Arm
                                 </div>
                                 <div class="card-body">
                                     <form action="components_ClassArm/createClassArm.jsp" method="POST">
@@ -82,7 +82,7 @@
                                             <label for="classArmName" class="form-label">Class Arm Name</label>
                                             <input type="text" class="form-control" id="classArmName" placeholder="Enter class arm name" name="classArmName" required>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Save</button>
                                     </form>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                             <!-- Class Arms Table -->
                             <div class="card">
                                 <div class="card-header">
-                                    Existing Class Arms
+                                       <i class="fas fa-list-alt me-2"></i>Existing Class Arms
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">

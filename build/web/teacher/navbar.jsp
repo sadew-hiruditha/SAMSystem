@@ -23,7 +23,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="take-attendance.jsp">
+                        <a class="nav-link" href="takeAttendance.jsp">
                             <i class="fas fa-clipboard-check"></i> Take Attendance
                         </a>
                     </li>

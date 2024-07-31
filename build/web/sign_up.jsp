@@ -52,7 +52,7 @@
                 <!-- Left Section -->
                 <div class="col-lg-6 p-0 d-none d-lg-block">
                     <div class="left-section">
-                        <h2>Welcome to SAM System</h2>
+                         <h1 class="display-4 mb-4">Welcome to SAMS</h1>
                         <p>Sign up now!</p>
                     </div>
                 </div>
