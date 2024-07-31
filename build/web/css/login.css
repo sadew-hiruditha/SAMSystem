@@ -1,4 +1,8 @@
 .left-section {
+    background-image: url(../image/login2.jpg);
+    background-size: cover;
+    background-position: bottom;
+    background-repeat: no-repeat;
   background-color: #007bff;
   color: white;
   padding: 20px;
@@ -9,6 +13,7 @@
   justify-content: center;
   align-items: center;
 }
+
 
 .right-section {
   background-color: #f8f9fa;

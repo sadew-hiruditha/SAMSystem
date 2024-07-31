@@ -27,6 +27,8 @@
     LocalDate today = LocalDate.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
     String formattedDate = today.format(formatter);
+    
+pageContext.setAttribute("currentPage", "dashboard");
 %>
 
 

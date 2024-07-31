@@ -37,10 +37,11 @@
             <!-- Left Section -->
             <div class="col-lg-6 p-0 d-none d-lg-block">
                 <div class="left-section">
-                    <h2>Welcome To</h2>
-                    <h3>Student Attendance Management System</h3>
+                    <h1 class="display-4 mb-4">Welcome To SAMS</h1>
+                      <p class="lead">Join the waste revolution. Sign up now!</p>
                 </div>
             </div>
+<!--             
             <!-- Right Section -->
             <div class="col-lg-6 p-0 ">
                 <div class="right-section">

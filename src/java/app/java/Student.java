@@ -229,6 +229,35 @@ public class Student {
         }
         return false;
     }
+    
+    public static List<Student> getStudentsByClassAndClassArm(Connection con, int classId, int classArmId) throws SQLException {
+        List<Student> students = new ArrayList<>();
+        String query = "SELECT s.*, c.className, ca.classArmName FROM tblstudents s "
+                + "JOIN tblclass c ON s.classId = c.id "
+                + "JOIN tblclassarms ca ON s.classArmId = ca.id "
+                + "WHERE s.classId = ? AND s.classArmId = ? "
+                + "ORDER BY s.id";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, classId);
+            ps.setInt(2, classArmId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Student student = new Student();
+                    student.setId(rs.getInt("id"));
+                    student.setFirstName(rs.getString("firstName"));
+                    student.setLastName(rs.getString("lastName"));
+                    student.setAdmissionNumber(rs.getString("admissionNumber"));
+                    student.setClassId(rs.getInt("classId"));
+                    student.setClassArmId(rs.getInt("classArmId"));
+                    student.setClassName(rs.getString("className"));
+                    student.setClassArmName(rs.getString("classArmName"));
+                    student.setDateCreated(rs.getString("dateCreated"));
+                    students.add(student);
+                }
+            }
+        }
+        return students;
+    }
 
     public static List<Student> searchStudents(Connection con, String searchTerm) throws SQLException {
         List<Student> students = new ArrayList<>();

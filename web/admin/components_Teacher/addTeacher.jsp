@@ -9,7 +9,6 @@
     String classIdStr = request.getParameter("classId");
     String classArmIdStr = request.getParameter("classArmId");
     String password = "";
-    
     String addStatus = "0"; // Default to failure
     
     if(firstName != null && !firstName.trim().isEmpty() &&
