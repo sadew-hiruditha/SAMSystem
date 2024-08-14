@@ -1,9 +1,3 @@
-<%-- 
-    Document   : sign_up
-    Created on : Jun 25, 2024, 3:20:21 PM
-    Author     : Sadew
---%>
-
 <%@ page import="app.java.MD5" %>
 <%@ page import="app.java.DBConnector" %>
 <%@ page import="java.sql.PreparedStatement" %>
@@ -52,8 +46,8 @@
                 <!-- Left Section -->
                 <div class="col-lg-6 p-0 d-none d-lg-block">
                     <div class="left-section">
-                        <h2>Welcome to SAM System</h2>
-                        <p>Sign up now!</p>
+                        <h1 class="display-4 mb-4">Teacher Registration</h1>
+                        <p>Join to Manage and Monitor Student Attendance</p>
                     </div>
                 </div>
 
@@ -88,14 +82,38 @@
                                 </div>
                                 <p class="form-footer">Already have an account? <a href="index.jsp">Sign in</a></p>
                             </form>
-                            <% String status = request.getParameter("s");
-                             if (status != null) {
-                                 if (status.equals("1")) { %>
+                            <%
+                                String status = request.getParameter("s");
+                                String error = request.getParameter("error");
+                                if (status != null) {
+                                    if (status.equals("1")) { %>
                             <div class="alert alert-success mt-3">Signup successful</div>
-                            <% } else if (status.equals("0")) { %>
-                            <div class="alert alert-danger mt-3">Signup failed. Please try again.</div>
+                            <% } else if (status.equals("0")) {
+                                String errorMessage = "";
+                                if (error != null) {
+                                    if (error.equals("missing_fields")) {
+                                        errorMessage = "Please fill in all fields.";
+                                    } else if (error.equals("invalid_password")) {
+                                        errorMessage = "Password must be at least 8 characters long and include a special character.";
+                                    } else if (error.equals("password_mismatch")) {
+                                        errorMessage = "Passwords do not match.";
+                                    } else if (error.equals("duplicate_email")) {
+                                        errorMessage = "This email is already registered.";
+                                    } else if (error.equals("duplicate_nic")) {
+                                        errorMessage = "This NIC is already registered.";
+                                    } else if (error.equals("duplicate_entry")) {
+                                        errorMessage = "This user already exists.";
+                                    } else if (error.equals("registration_failed")) {
+                                        errorMessage = "Registration failed. Please try again.";
+                                    } else {
+                                        errorMessage = "An unknown error occurred. Please try again.";
+                                    }
+                                }
+                            %>
+                            <div class="alert alert-danger mt-3"><%= errorMessage%></div>
                             <% }
-                                }%>
+                                }
+                            %>
 
                         </div>
                     </div>

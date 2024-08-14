@@ -7,7 +7,6 @@
 <%@page import="java.util.UUID"%>
 
 <%
-    // Retrieve form parameters
     String username = request.getParameter("username");
     String password = request.getParameter("password");
     String rememberMe = request.getParameter("rememberMe");
@@ -26,18 +25,15 @@
 
         if (user.authenticate(con)) {
             if (user.retrieveUserDetails(con)) {
-                // User authenticated successfully and details retrieved
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("username", user.getUsername());
                 session.setAttribute("role", user.getRole());
                 session.setAttribute("firstname", user.getFirstName());
                 session.setAttribute("lastname", user.getLastName());
 
-                // Handle "Remember Me" functionality
                 if ("on".equals(rememberMe)) {
                     String cookieToken = UUID.randomUUID().toString();
 
-                    // Store the cookie token in the database
                     String updateQuery = "UPDATE users SET cookie_token = ? WHERE id = ?";
                     pst = con.prepareStatement(updateQuery);
                     pst.setString(1, cookieToken);
@@ -49,11 +45,10 @@
                     int maxAge = 30 * 24 * 60 * 60; // 30 days
                     tokenCookie.setMaxAge(maxAge);
                     tokenCookie.setHttpOnly(true); // For better security
-                    tokenCookie.setPath("/"); // Available on all pages
+                    tokenCookie.setPath("/"); 
                     response.addCookie(tokenCookie);
                 }
 
-                // Redirect to the respective dashboard
                 String userRole = user.getRole();
 
                 if (userRole != null) {

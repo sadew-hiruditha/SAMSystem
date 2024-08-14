@@ -1,9 +1,12 @@
 .left-section {
+    background-image: url(../image/registration.jpg);
+    background-size: cover;
+    background-position: bottom;
+    background-repeat: no-repeat;
   background-color: #002c7d;
   color: white;
   padding: 20px;
   height: 100vh;
-  /* Full height of viewport */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,7 +17,6 @@
   background-color: #f8f9fa;
   padding: 20px;
   min-height: 100vh;
-  /* Full height of viewport */
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,3 +1,4 @@
+<%@page import="app.java.User"%>
 <%@page import="java.util.List"%>
 <%@page import="app.java.DBConnector"%>
 <%@page import="app.java.Teacher"%>
@@ -10,18 +11,28 @@
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
         String phoneNo = request.getParameter("phoneNo");
-        int classId = Integer.parseInt(request.getParameter("classId"));
-        int classArmId = Integer.parseInt(request.getParameter("classArmId"));
-        String password = "";
+        int classId = 0;
+        int classArmId = 0;
         String status = "0"; // Default to failure
-        
-        Teacher teacher = new Teacher(firstName, lastName, email, phoneNo, password, classId, classArmId);
-        
+
+        String classIdParam = request.getParameter("classId");
+        String classArmIdParam = request.getParameter("classArmId");
+
+        if (classIdParam != null && !classIdParam.isEmpty()) {
+            classId = Integer.parseInt(classIdParam);
+        }
+
+        if (classArmIdParam != null && !classArmIdParam.isEmpty()) {
+            classArmId = Integer.parseInt(classArmIdParam);
+        }
+
+        Teacher teacher = new Teacher(firstName, lastName, email, phoneNo, classId, classArmId);
+
         try {
-            if(teacher.addTeacher(DBConnector.getConnection())) {
+            if (teacher.addTeacher(DBConnector.getConnection())) {
                 status = "1"; // Success
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         response.sendRedirect("manageTeacher.jsp?s=" + status);
@@ -35,12 +46,13 @@
         <title>Create Class Teachers</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
         <link rel="stylesheet" href="../css/dashboard/styles.css">
     </head>
     <body>
         <div class="container-fluid">
             <div class="row">
-             <jsp:include page="navbar.jsp" />
+                <jsp:include page="navbar.jsp" />
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 class="h2">Create Class Teachers</h1>
@@ -78,13 +90,28 @@
                             <!-- Add Teacher Form -->
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    Create Class Teachers
+                                    <i class="fas fa-user-plus"></i> Create Class Teachers
                                 </div>
                                 <div class="card-body">
                                     <form action="manageTeacher.jsp" method="POST">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="classId" class="form-label">Select Class *</label>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="teacherId" class="form-label"> <i class="fas fa-user-tie"></i> Select Teacher </label>
+                                                <select class="form-select" id="teacherId" name="teacherId" required onchange="this.form.submit()">
+                                                    <option value="">--Select Teacher--</option>
+                                                    <%
+                                                        User userObj = new User();
+                                                        List<User> teachers = userObj.getUsersByRole(DBConnector.getConnection(), "teacher");
+                                                        for (User t : teachers) {
+                                                            String selected = (request.getParameter("teacherId") != null && request.getParameter("teacherId").equals(String.valueOf(t.getId()))) ? "selected" : "";
+                                                    %>
+                                                    <option value="<%= t.getId()%>" <%= selected%>><%= t.getFirstName() + " " + t.getLastName()%></option>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="classId" class="form-label"><i class="fas fa-chalkboard"></i> Select Class</label>
                                                 <select class="form-select" id="classId" name="classId" required onchange="this.form.submit()">
                                                     <option value="">--Select Class--</option>
                                                     <%
@@ -94,17 +121,16 @@
                                                             String selected = (request.getParameter("classId") != null && request.getParameter("classId").equals(String.valueOf(cls.getId()))) ? "selected" : "";
                                                     %>
                                                     <option value="<%= cls.getId()%>" <%= selected%>><%= cls.getClassName()%></option>
-                                                    <%
-                                                        }
-                                                    %>
+                                                    <% } %>
                                                 </select>
                                             </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="classArmId" class="form-label">Class Arm *</label>
+
+                                            <div class="col-md-6">
+                                                <label for="classArmId" class="form-label"><i class="fas fa-sitemap"></i> Class Arm</label>
                                                 <select class="form-select" id="classArmId" name="classArmId" required>
                                                     <option value="">--Select Class Arm--</option>
                                                     <%
-                                                        if (request.getParameter("classId") != null) {
+                                                        if (request.getParameter("classId") != null && !request.getParameter("classId").isEmpty()) {
                                                             int selectedClassId = Integer.parseInt(request.getParameter("classId"));
                                                             ClassArm classArmObj = new ClassArm();
                                                             List<ClassArm> classArms = classArmObj.getClassArmsByClassId(DBConnector.getConnection(), selectedClassId);
@@ -117,29 +143,49 @@
                                                     %>
                                                 </select>
                                             </div>
+
+                                            <%
+                                                String firstName = "";
+                                                String lastName = "";
+                                                String username = "";
+                                                String phoneNo = "";
+
+                                                if (request.getParameter("teacherId") != null && !request.getParameter("teacherId").isEmpty()) {
+                                                    int selectedTeacherId = Integer.parseInt(request.getParameter("teacherId"));
+                                                    User selectedTeacher = new User();
+                                                    selectedTeacher.setId(selectedTeacherId);
+                                                    selectedTeacher.retrieveUserDetails(DBConnector.getConnection());
+
+                                                    firstName = selectedTeacher.getFirstName();
+                                                    lastName = selectedTeacher.getLastName();
+                                                    username = selectedTeacher.getUsername();
+                                                }
+                                            %>
+
+                                            <div class="col-md-6">
+                                                <label for="firstName" class="form-label"><i class="fas fa-user"></i> First Name</label>
+                                                <input type="text" class="form-control" id="firstName" name="firstName" value="<%= firstName%>" readonly required>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="lastName" class="form-label"><i class="fas fa-user"></i> Last Name</label>
+                                                <input type="text" class="form-control" id="lastName" name="lastName" value="<%= lastName%>" readonly required>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="username" class="form-label"><i class="fas fa-at"></i> Username</label>
+                                                <input type="text" class="form-control" id="username" name="email" value="<%= username%>" readonly required>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="phoneNo" class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+                                                <input type="tel" class="form-control" id="phoneNo" name="phoneNo" value="<%= phoneNo%>" required>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <button type="submit" name="addTeacher" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+                                            </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="firstName" class="form-label">Firstname *</label>
-                                                <input type="text" class="form-control" id="firstName" name="firstName" required>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="lastName" class="form-label">Lastname *</label>
-                                                <input type="text" class="form-control" id="lastName" name="lastName" required>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="email" class="form-label">Email Address *</label>
-                                                <input type="email" class="form-control" id="email" name="email" required>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="phoneNo" class="form-label">Phone No *</label>
-                                                <input type="tel" class="form-control" id="phoneNo" name="phoneNo" required>
-                                            </div>
-                                        </div>
-                                 
-                                        <button type="submit" name="addTeacher" class="btn btn-primary">Save</button>
                                     </form>
                                 </div>
                             </div>
@@ -150,63 +196,45 @@
                                     All Class Teachers
                                 </div>
                                 <div class="card-body">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="entriesSelect" class="form-label">Show entries</label>
-                                            <select class="form-select" id="entriesSelect" style="width: auto;">
-                                                <option>10</option>
-                                                <option>25</option>
-                                                <option>50</option>
-                                                <option>100</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="search" class="form-label">Search:</label>
-                                            <input type="text" class="form-control" id="search" style="width: auto;">
-                                        </div>
-                                    </div>
                                     <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-<!--                                                <th>#</th>-->
-                                                <th>First Name</th>
-                                                <th>Last Name</th>
-                                                <th>Email Address</th>
-                                                <th>Phone No</th>
-                                                <th>Class</th>
-                                                <th>Class Arm</th>
-                                                <th>Date Created</th>
-                                                <th>Delete</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <%
-                                                Teacher teacher = new Teacher();
-                                                List<Teacher> teachers = teacher.getAllTeachers(DBConnector.getConnection());
-                                                int count = 1;
-                                                for (Teacher t : teachers) {
-                                            %>
-                                            <tr>
-<!--                                                <td><%= count++%></td>-->
-                                                <td><%= t.getFirstName()%></td>
-                                                <td><%= t.getLastName()%></td>
-                                                <td><%= t.getEmail()%></td>
-                                                <td><%= t.getPhoneNo()%></td>
-                                                <td><%= t.getClassName()%></td>
-                                                <td><%= t.getClassArmName()%></td>
-                                                <td><%= t.getDateCreated()%></td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-sm" onclick="deleteTeacher(<%= t.getId()%>)">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <%
-                                                }
-                                            %>
-                                        </tbody>
-                                    </table>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Email Address</th>
+                                                    <th>Phone No</th>
+                                                    <th>Class</th>
+                                                    <th>Class Arm</th>
+                                                    <th>Date Created</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <%
+                                                    Teacher teacher = new Teacher();
+                                                    List<Teacher> teachersfor = teacher.getAllTeachers(DBConnector.getConnection());
+                                                    for (Teacher t : teachersfor) {
+                                                %>
+                                                <tr>
+                                                    <td><%= t.getFirstName()%></td>
+                                                    <td><%= t.getLastName()%></td>
+                                                    <td><%= t.getEmail()%></td>
+                                                    <td><%= t.getPhoneNo()%></td>
+                                                    <td><%= t.getClassName()%></td>
+                                                    <td><%= t.getClassArmName()%></td>
+                                                    <td><%= t.getDateCreated()%></td>
+                                                    <td>
+                                                        <button class="btn btn-danger btn-sm" onclick="deleteTeacher(<%= t.getId()%>)">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <%
+                                                    }
+                                                %>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -242,14 +270,11 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            function deleteTeacher(id) {
-                document.getElementById('deleteTeacherId').value = id;
-                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-                deleteModal.show();
-            }
-             
+                                                            function deleteTeacher(id) {
+                                                                document.getElementById('deleteTeacherId').value = id;
+                                                                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                                                                deleteModal.show();
+                                                            }
         </script>
-
-       
     </body>
 </html>

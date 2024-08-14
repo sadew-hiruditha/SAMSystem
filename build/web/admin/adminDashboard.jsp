@@ -29,9 +29,6 @@
         }
     }
 
-    LocalDate today = LocalDate.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-    String formattedDate = today.format(formatter);
 
 %>
 
@@ -46,50 +43,88 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
             body {
-                background-color: #f8f9fa;
+                background-color: #f0f2f5;
+                font-family: 'Inter', sans-serif;
             }
+
             .sidebar {
                 background-color: #212529;
                 min-height: 100vh;
             }
+
             .content-wrapper {
-                padding: 1.5rem;
-                margin-top: 1rem;
+                padding: 2rem;
             }
+
             .card {
                 border: none;
-                border-radius: 0.5rem;
-                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-                transition: transform 0.3s ease-in-out;
+                border-radius: 1rem;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                background-color: #ffffff;
+                position: relative;
+                overflow: hidden;
+                height: 100%;
             }
+
             .card:hover {
                 transform: translateY(-0.25rem);
+                box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
             }
+
             .card-title {
-                font-size: 1.5rem;
-                font-weight: 500;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #495057;
             }
+
             .card-text {
-                font-size: 2rem;
+                font-size: 3rem;
                 font-weight: 700;
+                color: #212529;
             }
+
             .icon-container {
                 position: absolute;
-                top: 1rem;
-                right: 1rem;
-                opacity: 0.5;
+                top: 1.5rem;
+                right: 1.5rem;
+                font-size: 3.5rem;
+                opacity: 0.8;
             }
-            .modern-datetime {
 
-                padding: 0.5rem 1rem;
-                display: inline-block;
-            }
+
             #currentTime {
                 font-size: 2.5rem;
+                font-weight: 700;
+                color: #212529;
             }
+
             #currentDate {
-                font-size: 1rem;
+                font-size: 1.1rem;
+                color: #6c757d;
             }
+
+            .welcome-message {
+                font-size: 2rem;
+                font-weight: 600;
+                color: #212529;
+                margin-bottom: 2rem;
+            }
+
+            .icon-1 { color: #4e73df; }
+            .icon-2 { color: #1cc88a; }
+            .icon-3 { color: #f6c23e; }
+            .icon-4 { color: #36b9cc; }
+
+            .dashboard-header {
+                background-color: #ffffff;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+
+
         </style>
     </head>
     <body>
@@ -98,71 +133,65 @@
                 <jsp:include page="navbar.jsp" />
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div class="content-wrapper">
-                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Admin Dashboard</h1>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <h5 class="text-muted">Welcome, <%= firstname%></h5>
-                            </div>
-                            <div class="col-md-6 text-end">
+                        <div class="dashboard-header">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+                                <h1 class="h2 fw-bold text-primary">Admin Dashboard</h1>
                                 <div class="modern-datetime">
-                                    <div id="currentTime" class="display-4 fw-bold"></div>
-                                    <div id="currentDate" class="fs-5 text-muted"></div>
+                                    <div id="currentTime"></div>
+                                    <div id="currentDate"></div>
                                 </div>
                             </div>
+                            <h2 class="welcome-message mt-4">Welcome, <%= firstname%></h2>
                         </div>
 
                         <div class="row">
                             <div class="col-md-3 mb-4">
-                                <div class="card bg-white position-relative">
+                                <div class="card card-1">
                                     <div class="card-body">
-                                        <div class="icon-container text-primary">
-                                            <i class="fas fa-users fa-3x"></i>
+                                        <div class="icon-container icon-1">
+                                            <i class="fas fa-users"></i>
                                         </div>
-                                        <h5 class="card-title text-muted">Total Students</h5>
-                                        <p class="card-text text-primary"><%= totalStudents%></p>
+                                        <h5 class="card-title">Total Students</h5>
+                                        <p class="card-text"><%= totalStudents%></p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-4">
-                                <div class="card bg-white position-relative">
+                                <div class="card card-2">
                                     <div class="card-body">
-                                        <div class="icon-container text-info">
-                                            <i class="fas fa-chalkboard-teacher fa-3x"></i>
+                                        <div class="icon-container icon-2">
+                                            <i class="fas fa-chalkboard-teacher"></i>
                                         </div>
-                                        <h5 class="card-title text-muted">Class Teachers</h5>
-                                        <p class="card-text text-info"><%= totalTeachers%></p>
+                                        <h5 class="card-title">Class Teachers</h5>
+                                        <p class="card-text"><%= totalTeachers%></p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-4">
-                                <div class="card bg-white position-relative">
+                                <div class="card card-3">
                                     <div class="card-body">
-                                        <div class="icon-container text-success">
-                                            <i class="fas fa-chalkboard fa-3x"></i>
+                                        <div class="icon-container icon-3">
+                                            <i class="fas fa-chalkboard"></i>
                                         </div>
-                                        <h5 class="card-title text-muted">Classes</h5>
-                                        <p class="card-text text-success"><%= totalClasses%></p>
+                                        <h5 class="card-title">Classes</h5>
+                                        <p class="card-text"><%= totalClasses%></p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-4">
-                                <div class="card bg-white position-relative">
+                                <div class="card card-4">
                                     <div class="card-body">
-                                        <div class="icon-container text-warning">
-                                            <i class="fas fa-sitemap fa-3x"></i>
+                                        <div class="icon-container icon-4">
+                                            <i class="fas fa-sitemap"></i>
                                         </div>
-                                        <h5 class="card-title text-muted">Class Arms</h5>
-                                        <p class="card-text text-warning"><%= totalClassArms%></p>
+                                        <h5 class="card-title">Class Arms</h5>
+                                        <p class="card-text"><%= totalClassArms%></p>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
-                        <!-- Add more content here as needed -->
+
 
                     </div>
                 </main>
@@ -171,6 +200,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             function updateDateTime() {
                 const now = new Date();
@@ -195,6 +225,7 @@
                     $("#sidebar").removeClass("show");
                 }
             });
+
         </script>
     </body>
 </html>

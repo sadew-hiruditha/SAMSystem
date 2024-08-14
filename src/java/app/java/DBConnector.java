@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package app.java;
 
 /**
@@ -27,8 +23,11 @@ public class DBConnector {
             java.lang.Class.forName(DRIVER); // Use fully qualified name
             con = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (Exception e) {
-            e.printStackTrace(); // This will print the stack trace to the console
-            throw e; // Rethrow the exception to make it clear that an error has occurred
+            e.printStackTrace(); 
+            throw e; 
+        }
+        if(con !=null){
+            
         }
         return con;
     }

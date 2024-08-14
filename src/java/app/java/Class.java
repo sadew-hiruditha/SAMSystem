@@ -12,7 +12,7 @@ import java.util.logging.Logger;
     public class Class {
 
     static void forName(String DRIVER) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
     
     private int id;
@@ -116,4 +116,6 @@ import java.util.logging.Logger;
         }
         return 0;
     }
+    
+    
 }
