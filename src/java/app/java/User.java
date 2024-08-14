@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +19,11 @@ public class User {
     private String NIC;
     private String PassWord;
     private String confirmPassword;
+
+    public User() {
+    }
+    
+    
 
     public User(String username, String PassWord) {
         this.username = username;
@@ -33,7 +40,6 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -98,7 +104,7 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
-    public boolean register(Connection con) throws SQLException {
+ public boolean register(Connection con) throws SQLException {
         try {
             String query = "INSERT INTO users (first_name, last_name, username, role, nic, password) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -109,12 +115,22 @@ public class User {
             pstmt.setString(4, this.role);
             pstmt.setString(5, this.NIC);
             pstmt.setString(6, this.PassWord);
-            return pstmt.executeUpdate() > 0;
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, "Error registering user", ex);
+            String errorMessage = "Error registering user: ";
+            switch (ex.getErrorCode()) {
+                case 1062: // Duplicate entry error
+                    errorMessage += "Duplicate username or NIC.";
+                    break;
+                default:
+                    errorMessage += ex.getMessage();
+            }
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, errorMessage, ex);
             throw ex;
         }
     }
+
 
     public boolean authenticate(Connection con) throws SQLException {
         try {
@@ -143,19 +159,39 @@ public class User {
     }
     
     public boolean retrieveUserDetails(Connection con) throws SQLException {
-    String query = "SELECT first_name, last_name, role FROM users WHERE id = ?";
+    String query = "SELECT first_name, last_name,username, role FROM users WHERE id = ?";
     try (PreparedStatement pstmt = con.prepareStatement(query)) {
         pstmt.setInt(1, this.id);
         try (ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {
                 this.firstName = rs.getString("first_name");
                 this.lastName = rs.getString("last_name");
+                this.username = rs.getString("username");
                 this.role = rs.getString("role");
                 return true;
             }
         }
     }
     return false;
+}
+    
+    public List<User> getUsersByRole(Connection con, String role) throws SQLException {
+        List<User> users = new ArrayList<>();
+    String query = "SELECT id, first_name, last_name, username FROM users WHERE role = ?";
+    try (PreparedStatement pstmt = con.prepareStatement(query)) {
+        pstmt.setString(1, role);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setUsername(rs.getString("username"));
+                users.add(user);
+            }
+        }
+    }
+    return users;
 }
     
     

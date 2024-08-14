@@ -29,9 +29,6 @@
         }
     }
 
-    LocalDate today = LocalDate.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-    String formattedDate = today.format(formatter);
 
 %>
 
@@ -44,78 +41,91 @@
         <title>Admin Dashboard - Attendance Management</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <style>
-    body {
-        background-color: #f8f9fa;
-        font-family: 'Inter', sans-serif;
-    }
-    .sidebar {
-        background-color: #212529;
-        min-height: 100vh;
-    }
-    .content-wrapper {
-        padding: 2rem;
-    }
-    .card {
-        border: none;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        background-color: #ffffff;
-        position: relative;
-        overflow: hidden;
-    }
-    .card:hover {
-        transform: translateY(-0.25rem);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-    }
-    .card-title {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #495057;
-    }
-    .card-text {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #212529;
-    }
-    .icon-container {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        font-size: 2.5rem;
-        opacity: 0.8;
-    }
-    .modern-datetime {
-        background-color: #ffffff;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
-    }
-    #currentTime {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #212529;
-    }
-    #currentDate {
-        font-size: 0.9rem;
-        color: #6c757d;
-    }
-    .welcome-message {
-        font-size: 1.25rem;
-        font-weight: 500;
-        color: #212529;
-    }
-    .card-1 { border-left: 4px solid #007bff; }
-    .card-2 { border-left: 4px solid #28a745; }
-    .card-3 { border-left: 4px solid #ffc107; }
-    .card-4 { border-left: 4px solid #17a2b8; }
-    
-    .icon-1 { color: #007bff; }
-    .icon-2 { color: #28a745; }
-    .icon-3 { color: #ffc107; }
-    .icon-4 { color: #17a2b8; }
-</style>
+        <style>
+            body {
+                background-color: #f0f2f5;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .sidebar {
+                background-color: #212529;
+                min-height: 100vh;
+            }
+
+            .content-wrapper {
+                padding: 2rem;
+            }
+
+            .card {
+                border: none;
+                border-radius: 1rem;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                background-color: #ffffff;
+                position: relative;
+                overflow: hidden;
+                height: 100%;
+            }
+
+            .card:hover {
+                transform: translateY(-0.25rem);
+                box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+            }
+
+            .card-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #495057;
+            }
+
+            .card-text {
+                font-size: 3rem;
+                font-weight: 700;
+                color: #212529;
+            }
+
+            .icon-container {
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+                font-size: 3.5rem;
+                opacity: 0.8;
+            }
+
+
+            #currentTime {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #212529;
+            }
+
+            #currentDate {
+                font-size: 1.1rem;
+                color: #6c757d;
+            }
+
+            .welcome-message {
+                font-size: 2rem;
+                font-weight: 600;
+                color: #212529;
+                margin-bottom: 2rem;
+            }
+
+            .icon-1 { color: #4e73df; }
+            .icon-2 { color: #1cc88a; }
+            .icon-3 { color: #f6c23e; }
+            .icon-4 { color: #36b9cc; }
+
+            .dashboard-header {
+                background-color: #ffffff;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+
+
+        </style>
     </head>
     <body>
         <div class="container-fluid">
@@ -123,22 +133,18 @@
                 <jsp:include page="navbar.jsp" />
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div class="content-wrapper">
-                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4">
-                            <h1 class="h2 fw-bold text-primary">Admin Dashboard</h1>
-                            <div class="modern-datetime">
-                                <div id="currentTime"></div>
-                                <div id="currentDate"></div>
+                        <div class="dashboard-header">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+                                <h1 class="h2 fw-bold text-primary">Admin Dashboard</h1>
+                                <div class="modern-datetime">
+                                    <div id="currentTime"></div>
+                                    <div id="currentDate"></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h2 class="welcome-message">Welcome, <%= firstname%></h2>
-                            </div>
+                            <h2 class="welcome-message mt-4">Welcome, <%= firstname%></h2>
                         </div>
 
                         <div class="row">
-                 
                             <div class="col-md-3 mb-4">
                                 <div class="card card-1">
                                     <div class="card-body">
@@ -185,7 +191,7 @@
                             </div>
                         </div>
 
-                        <!-- Add more content here as needed -->
+
 
                     </div>
                 </main>
@@ -194,6 +200,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             function updateDateTime() {
                 const now = new Date();
@@ -218,6 +225,7 @@
                     $("#sidebar").removeClass("show");
                 }
             });
+
         </script>
     </body>
 </html>

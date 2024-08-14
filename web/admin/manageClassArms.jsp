@@ -42,7 +42,7 @@
                             <%
                             } else if (status.equals("2")) {
                             %>
-                            <div class="alert alert-warning mt-3">This class arm already exists!</div>
+
                             <%
                             } else if (status.equals("3")) {
                             %>
@@ -59,30 +59,30 @@
                             <!-- Add Class Arm Form -->
                             <div class="card mb-4">
                                 <div class="card-header">
-                                        <i class="fas fa-plus-circle me-2"></i>Add New Class Arm
+                                    <i class="fas fa-plus-circle me-2"></i>Add New Class Arm
                                 </div>
                                 <div class="card-body">
                                     <form action="components_ClassArm/createClassArm.jsp" method="POST">
                                         <div class="mb-3">
-                                            <label for="classId" class="form-label">Class</label>
+                                            <label for="classId" class="form-label"><i class="fas fa-chalkboard"></i> Class</label>
                                             <select class="form-select" id="classId" name="classId" required>
-                                                <option value="Select a class" >Select a class</option>
+                                                <option value="Select a class" > Select a class</option>
                                                 <%
                                                     Class classObj = new Class();
                                                     List<Class> classes = classObj.getAllClasses(DBConnector.getConnection());
                                                     for (Class cls : classes) {
                                                 %>
-                                                <option value="<%= cls.getId() %>"><%= cls.getClassName() %></option>
+                                                <option value="<%= cls.getId()%>"><%= cls.getClassName()%></option>
                                                 <%
                                                     }
                                                 %>
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="classArmName" class="form-label">Class Arm Name</label>
+                                            <label for="classArmName" class="form-label"><i class="fas fa-sitemap"></i> Class Arm Name</label>
                                             <input type="text" class="form-control" id="classArmName" placeholder="Enter class arm name" name="classArmName" required>
                                         </div>
-                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Save</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Save</button>
                                     </form>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                             <!-- Class Arms Table -->
                             <div class="card">
                                 <div class="card-header">
-                                       <i class="fas fa-list-alt me-2"></i>Existing Class Arms
+                                    <i class="fas fa-list-alt me-2"></i>Existing Class Arms
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
@@ -98,7 +98,7 @@
                                             <tr>
                                                 <th>Class Name</th>
                                                 <th>Class Arm Name</th>
-                                                <th>Is Assigned</th>
+
                                                 <th>Edit</th>
                                                 <th>Delete</th>
                                             </tr>
@@ -110,14 +110,14 @@
                                                 for (ClassArm arm : classArms) {
                                             %>
                                             <tr>
-                                                <td><%= arm.getClassName() %></td>
-                                                <td><%= arm.getClassArmName() %></td>
-                                                <td></td>
+                                                <td><%= arm.getClassName()%></td>
+                                                <td><%= arm.getClassArmName()%></td>
+
                                                 <td>
-                                                    <button class="btn btn-warning btn-sm" onclick="editClassArm(<%= arm.getId() %>, <%= arm.getClassId() %>, '<%= arm.getClassArmName() %>')">Edit</button>
+                                                    <button class="btn btn-warning btn-sm" onclick="editClassArm(<%= arm.getId()%>, <%= arm.getClassId()%>, '<%= arm.getClassArmName()%>')">Edit</button>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-sm" onclick="deleteClassArm(<%= arm.getId() %>, '<%= arm.getClassArmName() %>')">Delete</button>
+                                                    <button class="btn btn-danger btn-sm" onclick="deleteClassArm(<%= arm.getId()%>, '<%= arm.getClassArmName()%>')">Delete</button>
                                                 </td>
                                             </tr>
                                             <%
@@ -150,7 +150,7 @@
                                     <%
                                         for (Class cls : classes) {
                                     %>
-                                    <option value="<%= cls.getId() %>"><%= cls.getClassName() %></option>
+                                    <option value="<%= cls.getId()%>"><%= cls.getClassName()%></option>
                                     <%
                                         }
                                     %>
@@ -160,10 +160,7 @@
                                 <label for="editClassArmName" class="form-label">Class Arm Name</label>
                                 <input type="text" class="form-control" id="editClassArmName" name="classArmName" required>
                             </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="editIsAssigned" name="isAssigned">
-                                <label class="form-check-label" for="editIsAssigned">Is Assigned</label>
-                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -200,33 +197,32 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Toggle sidebar on mobile
-            $(".navbar-toggler").click(function () {
-                $("#sidebar").toggleClass("show");
-            });
+                                                        // Toggle sidebar on mobile
+                                                        $(".navbar-toggler").click(function () {
+                                                            $("#sidebar").toggleClass("show");
+                                                        });
 
-            // Close sidebar when clicking outside on mobile
-            $(document).click(function (event) {
-                if (!$(event.target).closest('#sidebar, .navbar-toggler').length) {
-                    $("#sidebar").removeClass("show");
-                }
-            });
+                                                        // Close sidebar when clicking outside on mobile
+                                                        $(document).click(function (event) {
+                                                            if (!$(event.target).closest('#sidebar, .navbar-toggler').length) {
+                                                                $("#sidebar").removeClass("show");
+                                                            }
+                                                        });
 
-            function editClassArm(id, classId, classArmName, isAssigned) {
-                document.getElementById('editClassArmId').value = id;
-                document.getElementById('editClassId').value = classId;
-                document.getElementById('editClassArmName').value = classArmName;
-                document.getElementById('editIsAssigned').checked = isAssigned;
-                var editModal = new bootstrap.Modal(document.getElementById('editClassArmModal'));
-                editModal.show();
-            }
+                                                        function editClassArm(id, classId, classArmName) {
+                                                            document.getElementById('editClassArmId').value = id;
+                                                            document.getElementById('editClassId').value = classId;
+                                                            document.getElementById('editClassArmName').value = classArmName;
+                                                            var editModal = new bootstrap.Modal(document.getElementById('editClassArmModal'));
+                                                            editModal.show();
+                                                        }
 
-            function deleteClassArm(id, classArmName) {
-                document.getElementById('deleteClassArmId').value = id;
-                document.getElementById('deleteClassArmName').textContent = classArmName;
-                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-                deleteModal.show();
-            }
+                                                        function deleteClassArm(id, classArmName) {
+                                                            document.getElementById('deleteClassArmId').value = id;
+                                                            document.getElementById('deleteClassArmName').textContent = classArmName;
+                                                            var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                                                            deleteModal.show();
+                                                        }
         </script>
     </body>
 </html>

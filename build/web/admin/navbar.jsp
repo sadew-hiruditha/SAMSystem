@@ -19,27 +19,27 @@
         <ul class="nav flex-column mt-4">
             <li class="nav-item">
                 <a class="nav-link" href="adminDashboard.jsp">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                    <i class="fas fa-tachometer-alt"></i>Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="manageClass.jsp">
-                    <i class="fas fa-clipboard-check"></i> Manage Classes
+                <a class="nav-link align-items-center d-flex  " href="manageClass.jsp">
+                    <i class="fas fa-clipboard-check"></i>Manage Classes
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="manageClassArms.jsp">
+                <a class="nav-link align-items-center d-flex " href="manageClassArms.jsp">
                     <i class="fas fa-chalkboard-teacher"></i> Manage Class Arms
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="manageTeacher.jsp">
+                <a class="nav-link align-items-center  d-flex " href="manageTeacher.jsp">
                     <i class="fas fa-user-tie"></i> Manage Teachers
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="manageStudent.jsp">
-                    <i class="fas fa-user-graduate"></i> Manage Students
+                <a class="nav-link  d-flex " href="manageStudent.jsp">
+                    <i class="fas fa-user-graduate"></i> <p>Manage Students</p>
                 </a>
             </li>
             <li class="nav-item">
