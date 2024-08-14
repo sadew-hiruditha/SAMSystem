@@ -15,7 +15,7 @@ public class ClassArm {
     private int classId;
     private String classArmName;
     private boolean isAssigned;
-    private String className; // To store the associated class name
+    private String className; 
 
     public ClassArm() {}
 
@@ -74,7 +74,6 @@ public class ClassArm {
         this.className = className;
     }
 
-    // Database operations
 
     public boolean classArmExists(Connection con) throws SQLException {
         String query = "SELECT COUNT(*) FROM tblclassarms WHERE classId = ? AND classArmName = ?";

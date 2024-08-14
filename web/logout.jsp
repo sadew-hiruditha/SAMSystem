@@ -15,6 +15,5 @@
         }
     }
 
-    // Redirect to the login page
     response.sendRedirect("index.jsp");
 %>

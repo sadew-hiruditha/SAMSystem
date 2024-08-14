@@ -13,9 +13,6 @@
     <style>
         body { background-color: #f8f9fa; }
         .content-wrapper {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             padding: 30px;
             margin-top: 20px;
         }
@@ -97,7 +94,7 @@
                                     <div class="card-body">
                                         <form action="components_Class/addclass.jsp" method="POST">
                                             <div class="mb-3">
-                                                <label for="className" class="form-label">Class Name</label>
+                                                <label for="className" class="form-label"><i class="fas fa-chalkboard"></i> Class Name</label>
                                                 <input type="text" class="form-control" id="className" placeholder="Enter class name" name="classname" required>
                                             </div>
                                             <button type="submit" class="btn btn-primary w-100">

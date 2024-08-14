@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 public class Teacher {
 
-    private static final String DEFAULT_PASSWORD = "1234"; // Default password constant
 
     private int id;
     private String firstName;
@@ -23,19 +22,18 @@ public class Teacher {
     private String className;
     private String classArmName;
     private String dateCreated;
-    private String password;
 
     public Teacher() {
     }
 
-    public Teacher(String firstName, String lastName, String email, String phoneNo, String password, int classId, int classArmId) {
+    public Teacher(String firstName, String lastName, String email, String phoneNo, int classId, int classArmId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNo = phoneNo;
         this.classId = classId;
         this.classArmId = classArmId;
-        this.password = password;
+
     }
 
     // Getters and setters
@@ -119,23 +117,13 @@ public class Teacher {
         this.dateCreated = dateCreated;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String PassWord) {
-        this.password = MD5.getMD5(PassWord);
-    }
-
-    // Database operations
     public boolean addTeacher(Connection con) throws SQLException {
-        if (this.password == null || this.password.isEmpty()) {
-            this.password = MD5.getMD5(DEFAULT_PASSWORD); // Set default password and hash it
-        }
+
 
         try {
             String query;
-            query = "INSERT INTO tblteachers (firstName, lastName, email, phoneNo, classId, classArmId, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            query = "INSERT INTO tblteachers (firstName, lastName, email, phoneNo, classId, classArmId) VALUES (?, ?, ?, ?, ?, ? )";
             try (PreparedStatement ps = con.prepareStatement(query)) {
                 ps.setString(1, this.firstName);
                 ps.setString(2, this.lastName);
@@ -143,7 +131,6 @@ public class Teacher {
                 ps.setString(4, this.phoneNo);
                 ps.setInt(5, this.classId);
                 ps.setInt(6, this.classArmId);
-                ps.setString(7, this.password);
                 int result = ps.executeUpdate();
                 return result > 0;
             }

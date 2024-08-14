@@ -1,11 +1,13 @@
 package app.java;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -300,4 +302,35 @@ public class Student {
         }
         return 0;
     }
+    
+    public static boolean submitAttendance(Connection conn, int classId, int classArmId, int studentId, String attendanceStatus, Date attendanceDate) throws SQLException {
+        String sql = "INSERT INTO tblattendance (classId, classArmId, studentId, attendanceStatus, attendanceDate) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, classId);
+            pstmt.setInt(2, classArmId);
+            pstmt.setInt(3, studentId);
+            pstmt.setString(4, attendanceStatus);
+            pstmt.setDate(5, attendanceDate);
+            int result = pstmt.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    public static boolean submitBatchAttendance(Connection conn, List<Map<String, Object>> attendanceData) throws SQLException {
+        String sql = "INSERT INTO tblattendance (classId, classArmId, studentId, attendanceStatus, attendanceDate) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (Map<String, Object> data : attendanceData) {
+                pstmt.setInt(1, (Integer) data.get("classId"));
+                pstmt.setInt(2, (Integer) data.get("classArmId"));
+                pstmt.setInt(3, (Integer) data.get("studentId"));
+                pstmt.setString(4, (String) data.get("attendanceStatus"));
+                pstmt.setDate(5, (Date) data.get("attendanceDate"));
+                pstmt.addBatch();
+            }
+            int[] results = pstmt.executeBatch();
+            return results.length > 0;
+        }
+    }
+    
+    
 }
